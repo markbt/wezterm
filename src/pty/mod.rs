@@ -18,6 +18,17 @@ pub struct PtySize {
     pub pixel_height: u16,
 }
 
+impl Default for PtySize {
+    fn default() -> Self {
+        PtySize {
+            rows: 24,
+            cols: 80,
+            pixel_width: 0,
+            pixel_height: 0,
+        }
+    }
+}
+
 pub trait MasterPty: std::io::Write {
     /// Inform the kernel and thus the child process that the window resized.
     /// It will update the winsize information maintained by the kernel,
