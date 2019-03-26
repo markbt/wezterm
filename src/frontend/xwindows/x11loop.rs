@@ -6,7 +6,7 @@ use crate::frontend::xwindows::Connection;
 use crate::frontend::FrontEnd;
 use crate::mux::tab::Tab;
 use crate::mux::Mux;
-use crate::spawn_tab;
+use crate::pty::PtySize;
 use failure::Error;
 use mio::{Events, Poll, PollOpt, Ready, Token};
 use mio_extras::channel::{channel, Receiver as GuiReceiver, Sender as GuiSender};
@@ -213,7 +213,7 @@ impl GuiEventLoop {
         config: &Arc<Config>,
         fonts: &Rc<FontConfiguration>,
     ) -> Result<(), Error> {
-        let tab = spawn_tab(&config)?; // FIXME: Domain
+        let tab = self.mux.default_domain().spawn(PtySize::default(), None)?;
         self.mux.add_tab(self.gui_executor(), &tab)?;
         let events = Self::get().expect("to be called on gui thread");
         let window = X11TerminalWindow::new(&events, &fonts, &config, &tab)?;
